@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bora Treinar - Sua Loja Fitness</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Reset e Estilos Gerais */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #1a1a1a;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+
+    /* Cabeçalho */
+    header {
+      background-color: #000;
+      padding: 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    header h1 {
+      font-size: 3em;
+      color: #00ff99;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    header p {
+      font-size: 1.1em;
+      color: #ccc;
+      margin-top: 5px;
+    }
+
+    /* Navegação */
+    nav {
+      background-color: #222;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      flex-wrap: wrap;
+      border-bottom: 3px solid #00ff99;
+    }
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 25px;
+    }
+    nav ul li { padding: 10px 0; }
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      transition: color 0.3s ease;
+    }
+    nav ul li a:hover { color: #00ff99; transform: scale(1.05); }
+    .carrinho-icon {
+      color: #fff;
+      background: #00ff99;
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .carrinho-icon:hover {
+      background: #00cc77;
+      transform: translateY(-2px);
+    }
+
+    /* Conteúdo das Abas */
+    .aba {
+      display: none;
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: auto;
+      animation: fadeIn 0.5s ease-out;
+    }
+    .aba.ativa { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .aba h2 {
+      font-size: 2.5em;
+      color: #00ff99;
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #333;
+      padding-bottom: 15px;
+    }
+
+    /* Seção de Produtos */
+    .produtos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+    .produto-card {
+      background: #282828;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .produto-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+    .produto-card img {
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .produto-card h3 {
+      font-size: 1.6em;
+      margin-bottom: 8px;
+      color: #e0e0e0;
+    }
+    .precos span {
+      display: block;
+      font-weight: bold;
+      margin-top: 5px;
+      color: #00ff99;
+      font-size: 1.1em;
+    }
+    .avaliacao-estrelas {
+      color: gold;
+      font-size: 1.3em;
+      margin: 12px 0;
+    }
+    .produto-card button {
+      margin-top: 15px;
+      padding: 12px 25px;
+      background-color: #28a745;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .produto-card button:hover {
+      background-color: #218838;
+      transform: translateY(-2px);
+    }
+
+    /* Formulários (Login e Cadastro) */
+    .form-container {
+      max-width: 450px;
+      margin: 50px auto;
+      padding: 35px;
+      background-color: #282828;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .form-container h2 {
+      font-size: 2em;
+      margin-bottom: 25px;
+      color: #00ff99;
+      border-bottom: none; /* Override general h2 style */
+      padding-bottom: 0;
+    }
+    .form-container label {
+      display: block;
+      margin-bottom: 8px;
+      text-align: left;
+      font-weight: bold;
+      color: #ccc;
+    }
+    .form-container input[type="text"],
+    .form-container input[type="password"],
+    .form-container input[type="email"] {
+      width: calc(100% - 20px);
+      padding: 12px;
+      margin-bottom: 18px;
+      border: 1px solid #555;
+      border-radius: 6px;
+      background-color: #3a3a3a;
+      color: #fff;
+      font-size: 1em;
+    }
+    .form-container button {
+      width: 100%;
+      padding: 14px;
+      background-color: #00ff99;
+      border: none;
+      border-radius: 6px;
+      color: #1a1a1a;
+      font-size: 1.2em;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .form-container button:hover {
+      background-color: #00cc77;
+      transform: translateY(-2px);
+    }
+    .form-container p {
+        margin-top: 25px;
+        color: #bbb;
+    }
+    .form-container a {
+        color: #00ff99;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+    .form-container a:hover {
+        text-decoration: underline;
+        color: #00cc77;
+    }
+
+    /* Carrinho de Compras */
+    #carrinho .itens-lista {
+      background: #282828;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    #carrinho .item-carrinho {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px dashed #444;
+    }
+    #carrinho .item-carrinho:last-child {
+        border-bottom: none;
+    }
+    #carrinho .item-carrinho span {
+        font-size: 1.1em;
+        color: #e0e0e0;
+    }
+    #carrinho .item-carrinho .remover-item {
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: background 0.3s ease;
+    }
+    #carrinho .item-carrinho .remover-item:hover {
+        background: #c82333;
+    }
+
+    #totalCarrinho {
+      margin-top: 30px;
+      font-size: 1.8em;
+      font-weight: bold;
+      text-align: right;
+      color: #00ff99;
+    }
+    .botoes-carrinho {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    .botao-finalizar, .botao-limpar {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-size: 1.1em;
+      font-weight: bold;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .botao-finalizar { background-color: #007bff; }
+    .botao-finalizar:hover { background-color: #0056b3; transform: translateY(-2px); }
+    .botao-limpar { background-color: #dc3545; }
+    .botao-limpar:hover { background-color: #c82333; transform: translateY(-2px); }
+
+    /* Seção de Avaliações (Clientes) */
+    .avaliacoes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    .avaliacao-card {
+      background: #282828;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .avaliacao-card .estrelas {
+      color: gold;
+      font-size: 1.4em;
+      margin-bottom: 10px;
+    }
+    .avaliacao-card p {
+      font-style: italic;
+      margin-bottom: 15px;
+      color: #ccc;
+    }
+    .avaliacao-card .cliente-info {
+      font-weight: bold;
+      color: #00ff99;
+      font-size: 1.1em;
+    }
+
+    /* Seção de Depoimentos */
+    .depoimentos-carousel {
+        /* Basic styling for carousel, could be enhanced with JS for actual carousel functionality */
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        align-items: center;
+    }
+    .depoimento-card {
+        background: #282828;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        max-width: 700px;
+        text-align: center;
+        border-left: 5px solid #00ff99;
+    }
+    .depoimento-card blockquote {
+        font-size: 1.3em;
+        font-style: italic;
+        margin-bottom: 20px;
+        position: relative;
+        color: #e0e0e0;
+    }
+    .depoimento-card blockquote::before {
+        content: "“";
+        font-size: 3em;
+        color: #00ff99;
+        position: absolute;
+        left: -20px;
+        top: -10px;
+        opacity: 0.7;
+    }
+    .depoimento-card blockquote::after {
+        content: "”";
+        font-size: 3em;
+        color: #00ff99;
+        position: absolute;
+        right: -20px;
+        bottom: -30px;
+        opacity: 0.7;
+    }
+    .depoimento-card .cliente-nome {
+        font-weight: bold;
+        color: #00ff99;
+        font-size: 1.2em;
+        margin-top: 10px;
+    }
+    .depoimento-card .cliente-cargo {
+        font-size: 0.9em;
+        color: #aaa;
+    }
+
+    /* Seção de Contato */
+    #contato .info-contato {
+      background: #282828;
+      padding: 35px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      max-width: 600px;
+      margin: 30px auto;
+    }
+    #contato .info-contato h3 {
+      color: #00ff99;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      border-bottom: 1px solid #444;
+      padding-bottom: 10px;
+    }
+    #contato .info-contato p {
+      margin-bottom: 12px;
+      font-size: 1.1em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #contato .info-contato p i {
+      color: #00ff99;
+      font-size: 1.3em;
+      width: 25px; /* Align icons */
+    }
+    #contato .info-contato a {
+      color: #00ff99;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    #contato .info-contato a:hover {
+      color: #00cc77;
+      text-decoration: underline;
+    }
+
+    /* Rodapé */
+    footer {
+      background-color: #000;
+      text-align: center;
+      padding: 25px;
+      margin-top: 50px;
+      color: #aaa;
+      font-size: 0.9em;
+      border-top: 3px solid #00ff99;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        padding: 10px;
+      }
+      nav ul {
+        width: 100%;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 15px;
+      }
+      .carrinho-icon {
+        width: 80%;
+        justify-content: center;
+        padding: 10px;
+      }
+      .aba {
+        padding: 20px 15px;
+      }
+      .aba h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+      }
+      .form-container, .depoimento-card {
+        padding: 25px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 2em;
+      }
+      header p {
+        font-size: 1em;
+      }
+      .produto-card, .avaliacao-card, .depoimento-card {
+        padding: 20px;
+      }
+      .form-container {
+        margin: 30px auto;
+        padding: 20px;
+      }
+      .form-container button {
+        padding: 10px;
+        font-size: 1em;
+      }
+      .botao-finalizar, .botao-limpar {
+        padding: 10px 20px;
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="sr-only">Pular para o conteúdo principal</a>
+
+  <header>
+    <h1>Bora Treinar</h1>
+    <p>Sua jornada para um corpo saudável começa aqui!</p>
+  </header>
+
+  <nav role="navigation" aria-label="Menu principal">
+    <ul>
+      <li><a href="#" onclick="mostrarAba('produtos')">Produtos</a></li>
+      <li><a href="#" onclick="tentarAcessarCarrinho()">Carrinho</a></li>
+      <li><a href="#" onclick="mostrarAba('avaliacoes')">Avaliações</a></li>
+      <li><a href="#" onclick="mostrarAba('depoimentos')">Depoimentos</a></li>
+      <li><a href="#" onclick="mostrarAba('contato')">Contato</a></li>
+    </ul>
+    <div class="carrinho-icon" onclick="tentarAcessarCarrinho()">
+      <i class="fas fa-shopping-cart"></i> Carrinho (<span id="contadorCarrinho">0</span>)
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <section id="produtos" class="aba ativa">
+      <h2>Nossos Produtos Fitness</h2>
+      <div class="produtos-grid">
+        <div class="produto-card">
+          <img src="https://images.tcdn.com.br/img/img_prod/875844/par_de_halteres_04_kg_emborrachado_15300031_1_c18ba2aa3cc86475a28af1a2240e0ed5.png" alt="Halteres Emborrachados">
+          <h3>Par de Halteres 4kg</h3>
+          <div class="precos">
+            <span>R$ 89,90</span>
+          </div>
+          <div class="avaliacao-estrelas">⭐⭐⭐⭐☆</div>
+          <button onclick="adicionarAoCarrinho({id: 'halt4kg', nome: 'Par de Halteres 4kg', preco: 89.90})">Comprar</button>
+        </div>
+
+        <div class="produto-card">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvUwMI72dredgqmJtH9nERHVUeahs3tuCnVA&s" alt="Colchonete de Yoga">
+          <h3>Colchonete EVA 10mm</h3>
+          <div class="precos">
+            <span>R$ 59,90</span>
+          </div>
+          <div class="avaliacao-estrelas">⭐⭐⭐⭐⭐</div>
+          <button onclick="adicionarAoCarrinho({id: 'colchEVA', nome: 'Colchonete EVA 10mm', preco: 59.90})">Comprar</button>
+        </div>
+
+        <div class="produto-card">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ60vWSIyB2PVRR225FgZ1RoAHSW3Fm-VxaTQ&s" alt="Corda de Pular Ajustável">
+          <h3>Corda de Pular Pro</h3>
+          <div class="precos">
+            <span>R$ 39,90</span>
+          </div>
+          <div class="avaliacao-estrelas">⭐⭐⭐⭐☆</div>
+          <button onclick="adicionarAoCarrinho({id: 'cordaPular', nome: 'Corda de Pular Pro', preco: 39.90})">Comprar</button>
+        </div>
+
+        <div class="produto-card">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQR3RLy0CzEJbDTkrbz9SlMIKc2e-rX8mpoAw&s" alt="Kit Elástico de Resistência">
+          <h3>Kit Elástico Resistência</h3>
+          <div class="precos">
+            <span>R$ 119,90</span>
+          </div>
+          <div class="avaliacao-estrelas">⭐⭐⭐⭐⭐</div>
+          <button onclick="adicionarAoCarrinho({id: 'kitElastico', nome: 'Kit Elástico Resistência', preco: 119.90})">Comprar</button>
+        </div>
+
+        <div class="produto-card">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgFk-U_2F2fKR_ps7iq7_HJ6v346yvvHiKfQ&s" alt="Luvas de Treino">
+          <h3>Luvas de Academia Confort</h3>
+          <div class="precos">
+            <span>R$ 49,90</span>
+          </div>
+          <div class="avaliacao-estrelas">⭐⭐⭐⭐☆</div>
+          <button onclick="adicionarAoCarrinho({id: 'luvasAcademia', nome: 'Luvas de Academia Confort', preco: 49.90})">Comprar</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="login" class="aba">
+      <div class="form-container">
+        <h2>Acesse sua Conta</h2>
+        <form onsubmit="event.preventDefault(); fazerLogin()">
+          <label for="login-username">Usuário:</label>
+          <input type="text" id="login-username" name="username" required>
+          <label for="login-password">Senha:</label>
+          <input type="password" id="login-password" name="password" required>
+          <button type="submit">Entrar</button>
+        </form>
+        <p>Não tem uma conta? <a href="#" onclick="mostrarAba('cadastro')">Cadastre-se aqui</a></p>
+      </div>
+    </section>
+
+    <section id="cadastro" class="aba">
+      <div class="form-container">
+        <h2>Crie sua Conta</h2>
+        <form onsubmit="event.preventDefault(); fazerCadastro()">
+          <label for="reg-username">Usuário:</label>
+          <input type="text" id="reg-username" name="username" required>
+          <label for="reg-email">Email:</label>
+          <input type="email" id="reg-email" name="email" required>
+          <label for="reg-password">Senha:</label>
+          <input type="password" id="reg-password" name="password" required>
+          <button type="submit">Cadastrar</button>
+        </form>
+        <p>Já tem uma conta? <a href="#" onclick="mostrarAba('login')">Faça login</a></p>
+      </div>
+    </section>
+
+    <section id="carrinho" class="aba">
+      <h2>Seu Carrinho de Compras</h2>
+      <div id="itensCarrinho" class="itens-lista">Você ainda não adicionou produtos ao seu carrinho.</div>
+      <div id="totalCarrinho">Total: R$ 0.00</div>
+      <div class="botoes-carrinho">
+        <button class="botao-finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
+        <button class="botao-limpar" onclick="limparCarrinho()">Limpar Carrinho</button>
+      </div>
+    </section>
+
+    <section id="avaliacoes" class="aba">
+      <h2>O que Nossos Clientes Dizem (Avaliações)</h2>
+      <div class="avaliacoes-grid">
+        <div class="avaliacao-card">
+          <div class="estrelas">⭐⭐⭐⭐⭐</div>
+          <p>"Excelente qualidade nos produtos! Os halteres são muito resistentes e o colchonete é super confortável para meus treinos de yoga."</p>
+          <div class="cliente-info">- Ana Paula, São Paulo</div>
+        </div>
+        <div class="avaliacao-card">
+          <div class="estrelas">⭐⭐⭐⭐☆</div>
+          <p>"A corda de pular é ótima para aquecimento. O kit de elásticos realmente eleva o nível do treino. Recomendo!"</p>
+          <div class="cliente-info">- Pedro Oliveira, Rio de Janeiro</div>
+        </div>
+        <div class="avaliacao-card">
+          <div class="estrelas">⭐⭐⭐⭐⭐</div>
+          <p>"Entrega super rápida e tudo veio certinho. As luvas de academia têm um ótimo custo-benefício. Voltarei a comprar!"</p>
+          <div class="cliente-info">- Carla Mendes, Belo Horizonte</div>
+        </div>
+        <div class="avaliacao-card">
+          <div class="estrelas">⭐⭐⭐⭐⭐</div>
+          <p>"Material de primeira! Adorei a variedade de produtos e o preço justo. Agora meus treinos em casa são completos."</p>
+          <div class="cliente-info">- Rafael Costa, Curitiba</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="depoimentos" class="aba">
+      <h2>Histórias de Sucesso - Depoimentos</h2>
+      <div class="depoimentos-carousel">
+        <div class="depoimento-card">
+          <blockquote>Desde que comecei a usar os equipamentos da Bora Treinar, meus resultados na academia dispararam. A qualidade é incomparável e o suporte ao cliente é excelente. Recomendo a todos que buscam performance e durabilidade.</blockquote>
+          <div class="cliente-nome">João Silva</div>
+          <div class="cliente-cargo">Personal Trainer</div>
+        </div>
+        <div class="depoimento-card">
+          <blockquote>Eu estava procurando por um lugar que oferecesse produtos fitness de alta qualidade com preços justos. Encontrei tudo isso e mais na Bora Treinar. Meus treinos em casa nunca foram tão eficazes!</blockquote>
+          <div class="cliente-nome">Mariana Santos</div>
+          <div class="cliente-cargo">Entusiasta Fitness</div>
+        </div>
+        <div class="depoimento-card">
+          <blockquote>A variedade de produtos é impressionante e a facilidade de compra é um diferencial. Finalizei minha compra em poucos minutos e recebi tudo super rápido. Parabéns à equipe!</blockquote>
+          <div class="cliente-nome">Fernando Lima</div>
+          <div class="cliente-cargo">Atleta Amador</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contato" class="aba">
+      <h2>Entre em Contato com a Bora Treinar</h2>
+      <div class="info-contato">
+        <h3>Estamos Prontos para Atender Você!</h3>
+        <p>Temos o prazer em ajudá-lo com suas dúvidas e necessidades. Sinta-se à vontade para nos contatar pelos canais abaixo:</p>
+        <br>
+        <p><i class="fas fa-envelope"></i><strong>Email:</strong> <a href="mailto:contato@boratreinar.com.br">contato@boratreinar.com.br</a></p>
+        <p><i class="fab fa-whatsapp"></i><strong>WhatsApp:</strong> (11) 99999-9999 (Atendimento de Seg. a Sex. das 9h às 18h)</p>
+        <p><i class="fas fa-phone-alt"></i><strong>Telefone Fixo:</strong> (11) 3333-3333</p>
+        <p><i class="fas fa-map-marker-alt"></i><strong>Endereço:</strong> Rua da Malhação, 123 - Bairro Fitness - São Paulo, SP - CEP: 01234-567</p>
+        <br>
+        <h3>Nossas Redes Sociais:</h3>
+        <p><i class="fab fa-instagram"></i><strong>Instagram:</strong> <a href="https://www.instagram.com/boratreinar" target="_blank">@boratreinar</a></p>
+        <p><i class="fab fa-facebook"></i><strong>Facebook:</strong> <a href="https://www.facebook.com/boratreinar" target="_blank">/boratreinaroficial</a></p>
+        <p><i class="fab fa-twitter"></i><strong>Twitter (X):</strong> <a href="https://twitter.com/boratreinar" target="_blank">@boratreinar_ofc</a></p>
+        <br>
+        <p>Aguardamos seu contato!</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Bora Treinar. Todos os direitos reservados.
+  </footer>
+
+  <script>
+    let carrinho = [];
+    let usuarioLogado = false; // Variável para controlar o status de login
+
+    // Load registered users from local storage or initialize an empty object
+    let usuariosRegistrados = JSON.parse(localStorage.getItem('usuariosRegistrados')) || {};
+
+    // Initial load for cart count from local storage (if any)
+    window.onload = function() {
+        const storedCart = localStorage.getItem('carrinhoBoraTreinar');
+        if (storedCart) {
+            carrinho = JSON.parse(storedCart);
+            atualizarCarrinho(); // Update the display if items were in cart
+        }
+    };
+
+    function adicionarAoCarrinho(produto) {
+      // Check if product already exists in cart, then increment quantity
+      const existingItem = carrinho.find(item => item.id === produto.id);
+      if (existingItem) {
+          existingItem.quantidade = (existingItem.quantidade || 1) + 1; // Initialize quantity if first add, then increment
+      } else {
+          carrinho.push({ ...produto, quantidade: 1 });
+      }
+      localStorage.setItem('carrinhoBoraTreinar', JSON.stringify(carrinho)); // Save to local storage
+      atualizarCarrinho();
+
+      if (usuarioLogado) {
+        mostrarAba('carrinho');
+      } else {
+        mostrarAba('login');
+        alert('Produto adicionado! Faça login ou cadastre-se para ver seu carrinho.');
+      }
+    }
+
+    function removerDoCarrinho(idProduto) {
+        carrinho = carrinho.filter(item => item.id !== idProduto);
+        localStorage.setItem('carrinhoBoraTreinar', JSON.stringify(carrinho));
+        atualizarCarrinho();
+    }
+
+    function atualizarCarrinho() {
+      const contadorCarrinhoElement = document.getElementById('contadorCarrinho');
+      const itensCarrinhoDiv = document.getElementById('itensCarrinho');
+      const totalCarrinhoDiv = document.getElementById('totalCarrinho');
+
+      const totalItems = carrinho.reduce((sum, item) => sum + (item.quantidade || 1), 0);
+      contadorCarrinhoElement.textContent = totalItems;
+
+      if (carrinho.length > 0) {
+        itensCarrinhoDiv.innerHTML = ''; // Clear previous content
+        let total = 0;
+        carrinho.forEach(item => {
+            const itemTotal = item.preco * (item.quantidade || 1);
+            total += itemTotal;
+            const itemElement = document.createElement('div');
+            itemElement.classList.add('item-carrinho');
+            itemElement.innerHTML = `
+                <span>${item.nome} (x${item.quantidade || 1}) - R$ ${itemTotal.toFixed(2)}</span>
+                <button class="remover-item" onclick="removerDoCarrinho('${item.id}')">Remover</button>
+            `;
+            itensCarrinhoDiv.appendChild(itemElement);
+        });
+        totalCarrinhoDiv.textContent = `Total: R$ ${total.toFixed(2)}`;
+      } else {
+        itensCarrinhoDiv.textContent = 'Você ainda não adicionou produtos ao seu carrinho.';
+        totalCarrinhoDiv.textContent = 'Total: R$ 0.00';
+      }
+    }
+
+    function finalizarCompra() {
+      if (carrinho.length > 0) {
+        alert('Compra finalizada com sucesso! Obrigado pela sua compra!');
+        limparCarrinho();
+      } else {
+        alert('Seu carrinho está vazio!');
+      }
+    }
+
+    function limparCarrinho() {
+      carrinho = [];
+      localStorage.removeItem('carrinhoBoraTreinar'); // Clear from local storage
+      atualizarCarrinho();
+      if (usuarioLogado) {
+        mostrarAba('carrinho');
+      } else {
+        mostrarAba('produtos');
+      }
+    }
+
+    function mostrarAba(id) {
+      document.querySelectorAll('.aba').forEach(aba => aba.classList.remove('ativa'));
+      document.getElementById(id).classList.add('ativa');
+    }
+
+    function tentarAcessarCarrinho() {
+      if (usuarioLogado) {
+        mostrarAba('carrinho');
+      } else {
+        mostrarAba('login');
+      }
+    }
+
+    function fazerLogin() {
+      const usernameInput = document.getElementById('login-username').value;
+      const passwordInput = document.getElementById('login-password').value;
+
+      if (usuariosRegistrados[usernameInput] && usuariosRegistrados[usernameInput].password === passwordInput) {
+        usuarioLogado = true;
+        alert('Login realizado com sucesso!');
+        mostrarAba('carrinho');
+        atualizarCarrinho();
+      } else {
+        alert('Usuário ou senha incorretos. Tente novamente.');
+      }
+    }
+
+    function fazerCadastro() {
+      const regUsername = document.getElementById('reg-username').value;
+      const regEmail = document.getElementById('reg-email').value;
+      const regPassword = document.getElementById('reg-password').value;
+
+      if (regUsername.length < 3 || regPassword.length < 6 || !regEmail.includes('@')) {
+          alert('Por favor, preencha todos os campos corretamente. O usuário deve ter no mínimo 3 caracteres, a senha 6 e um email válido.');
+          return;
+      }
+
+      if (regUsername in usuariosRegistrados) {
+        alert('Nome de usuário já existe. Por favor, escolha outro.');
+        return;
+      }
+
+      usuariosRegistrados[regUsername] = {
+        email: regEmail,
+        password: regPassword
+      };
+      localStorage.setItem('usuariosRegistrados', JSON.stringify(usuariosRegistrados));
+
+      alert('Cadastro realizado com sucesso! Agora você pode fazer login.');
+      document.getElementById('login-username').value = regUsername;
+      document.getElementById('login-password').value = '';
+      mostrarAba('login');
+    }
+  </script>
+
+</body>
+</html>
